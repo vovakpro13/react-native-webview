@@ -41,6 +41,7 @@ export default function App() {
                         size='large'
                         style={styles.flexContainer}
                     />
+
                 )}
                 onShouldStartLoadWithRequest={event => {
                     console.log(event)

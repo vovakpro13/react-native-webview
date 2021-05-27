@@ -42,7 +42,15 @@ export default function App() {
                         style={styles.flexContainer}
                     />
                 )}
+                onShouldStartLoadWithRequest={event => {
+                    console.log(event)
+                    if (event.url !== uri) {
+                        Linking.openURL(event.url)
+                        return false
+                    }
 
+                    return true
+                }}
             />
         </View>
     );

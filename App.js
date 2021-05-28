@@ -53,6 +53,7 @@ export default function App() {
                     return true
                 }}
             />
+
         </View>
     );
 }

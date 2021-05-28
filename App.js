@@ -1,10 +1,26 @@
 import React, {useRef, useState} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import Navbar from "./src/Navbar";
 import WebView from "react-native-webview";
-import {Linking} from "react-native-web";
+import {Linking} from "react-native";
 
-const uri = 'https://www.google.com/';
+
+//************************************************************************
+
+//JUST INJECT SOME JAVASCRIPT CODE TO PAGE AND BLOCK THE GOOGLE AUTH BUTTON
+
+//*************************************************************************
+
+const uri = 'https://github.com/vovakpro13/angular';
+
+const injectScript = `
+  (function () {
+    window.onclick = function(e) {
+      e.preventDefault();
+      window.postMessage(e.target.href);
+      e.stopPropagation()
+    }
+  }());
+`;
 
 export default function App() {
     // const [comments, setComments] = useState(null);
@@ -26,10 +42,16 @@ export default function App() {
         setCanGoForward(canGoForward);
         console.log(url)
     }
+    const onMessage = ({nativeEvent}) => {
+        const data = nativeEvent.data;
 
+        if (data !== undefined && data !== null) {
+            Linking.openURL(data);
+        }
+    }
     return (
         <View style={styles.container}>
-            <Navbar title={'Yooo'}/>
+            {/*<Navbar title={'Yooo'}/>*/}
             <WebView
                 source={{uri}}
                 ref={webviewRef}
@@ -42,15 +64,8 @@ export default function App() {
                         style={styles.flexContainer}
                     />
                 )}
-                onShouldStartLoadWithRequest={event => {
-                    console.log(event)
-                    if (event.url !== uri) {
-                        Linking.openURL(event.url)
-                        return false
-                    }
-
-                    return true
-                }}
+                onMessage={onMessage}
+                injectedJavaScript={injectScript}
             />
         </View>
     );
